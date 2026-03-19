@@ -17,29 +17,26 @@
           <h2
             class="font-display text-4xl font-medium mb-8 text-center text-white tracking-tight"
           >
-            Login
+            Register
           </h2>
 
-          <button
-            @click="handleGoogleLogin"
-            class="w-full flex items-center justify-center gap-2 magnetic-btn px-6 py-4 border border-white/20 rounded-full text-sm font-display text-white hover:border-syn-accent hover:bg-syn-accent hover:text-syn-dark transition-all duration-500 group"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              class="w-5 h-5 transition-transform group-hover:scale-110"
-            />
-            Login with Google
-          </button>
+          <form @submit.prevent="handleRegister" class="flex flex-col">
+            <div class="mb-5">
+              <label
+                for="name"
+                class="block text-syn-cream/80 text-sm mb-2 font-medium"
+                >Name</label
+              >
+              <input
+                v-model="name"
+                type="text"
+                id="name"
+                class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-syn-accent/50 focus:bg-white/10 transition-colors duration-300 text-white placeholder-white/20"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
 
-          <div class="flex items-center my-8">
-            <div class="grow h-px bg-white/10"></div>
-            <span class="px-4 text-syn-muted text-xs uppercase tracking-widest"
-              >OR</span
-            >
-            <div class="grow h-px bg-white/10"></div>
-          </div>
-
-          <form @submit.prevent="handleLogin" class="flex flex-col">
             <div class="mb-5">
               <label
                 for="email"
@@ -75,13 +72,12 @@
             <button
               class="w-full magnetic-btn group cursor-pointer relative px-8 py-4 bg-syn-accent text-syn-dark rounded-full font-display font-medium text-lg overflow-hidden"
             >
-              <span class="relative z-10">Login</span>
+              <span class="relative z-10">Register</span>
               <div
                 class="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"
               ></div>
             </button>
           </form>
-          <div class=""></div>
 
           <div
             v-if="errorMessage"
@@ -91,10 +87,10 @@
           </div>
 
           <p class="text-sm text-center mt-8 text-syn-muted">
-            Don't have an account?
+            Already have an account?
             <span
               class="text-syn-accent font-medium hover:text-white transition-colors cursor-pointer"
-              ><a href="/auth/register">Register</a></span
+              ><a href="/auth/login">Login</a></span
             >
           </p>
         </div>
@@ -110,46 +106,30 @@ definePageMeta({
   middleware: ["guest"],
 });
 
-const { Login, Register, GoogleLogin } = useAuth();
+const { Register } = useAuth();
 const email = ref("");
 const password = ref("");
+const name = ref("");
+const loading = ref(false);
+const error = ref("");
+const errorMessage = ref("");
 
-const errorMessage = ref("")
-
-onMounted(() => {
-  const magneticBtns = document.querySelectorAll(".magnetic-btn");
-  magneticBtns.forEach((btn: any) => {
-    btn.addEventListener("mousemove", (e: MouseEvent) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-    });
-
-    btn.addEventListener("mouseleave", () => {
-      btn.style.transform = "translate(0, 0)";
-    });
-  });
-});
-
-const handleLogin = async () => {
+const handleRegister = async () => {
+  loading.value = true;
+  error.value = "";
   try {
-    errorMessage.value = "" 
-    await Login({
+    errorMessage.value = "";
+    await Register({
       email: email.value,
       password: password.value,
+      name: name.value,
     });
   } catch (err) {
-    console.error("Login error:", err);
-    errorMessage.value = "Email atau password salah"
-  }
-};
-
-const handleGoogleLogin = async () => {
-  try {
-    await GoogleLogin();
-  } catch (err) {
-    console.error("Google login error:", err);
+    errorMessage.value = "Kredensial anda tidak valid";
+  } finally {
+    loading.value = false;
   }
 };
 </script>
+
+<style></style>

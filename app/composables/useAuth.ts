@@ -17,7 +17,7 @@ export const useAuth = () => {
       tokenCookie.value = response.token
       userState.value = response.user
       
-      navigateTo('/tes')
+      navigateTo('/dashboard')
       return response
     } catch (error) {
       console.error('Login Error:', error)
@@ -36,7 +36,7 @@ export const useAuth = () => {
       tokenCookie.value = response.token
       userState.value = response.user
       
-      navigateTo('/tes')
+      navigateTo('/dashboard')
       return response
     } catch (error) {
       console.error('Register Error:', error)
@@ -47,7 +47,7 @@ export const useAuth = () => {
   const GoogleLogin = () => {
     const url = `${config.public.apiBase}/api/auth/google`
     window.location.href = url
-    navigateTo('/tes')
+    navigateTo('/dashboard')
   }
 
   return {

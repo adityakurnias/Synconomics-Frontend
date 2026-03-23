@@ -1,0 +1,30 @@
+<template>
+  <header class="flex items-center justify-between h-20 px-8 border-b border-syn-border bg-syn-dark/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="flex-1 max-w-xl relative">
+      <Icon name="heroicons:magnifying-glass" class="w-4 h-4 text-syn-muted absolute left-4 top-1/2 -translate-y-1/2" />
+      <input 
+        type="text" 
+        placeholder="Search products, orders, or insights..." 
+        class="w-full bg-syn-darker border border-syn-border rounded-xl py-2.5 pl-11 pr-4 text-sm text-syn-cream placeholder-syn-muted focus:outline-none focus:border-syn-accent/30 focus:ring-1 focus:ring-syn-accent/30 transition-all"
+      />
+    </div>
+
+    <div class="flex items-center gap-5 ml-auto">
+      <button class="flex items-center gap-2 bg-syn-accent hover:bg-syn-gold text-syn-darker px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm">
+        <Icon name="heroicons:plus" class="w-4 h-4" />
+        Add New Product
+      </button>
+
+      <div class="w-px h-8 bg-syn-border mx-1"></div>
+
+      <button class="w-10 h-10 rounded-full border border-syn-border flex items-center justify-center text-syn-muted hover:text-syn-cream hover:bg-syn-surface transition-all relative">
+        <Icon name="heroicons:bell" class="w-5 h-5" />
+        <span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-syn-gold rounded-full border border-syn-dark"></span>
+      </button>
+
+      <button class="w-10 h-10 rounded-full overflow-hidden border border-syn-border hover:border-syn-accent/50 transition-colors">
+        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" class="w-full h-full object-cover" />
+      </button>
+    </div>
+  </header>
+</template>

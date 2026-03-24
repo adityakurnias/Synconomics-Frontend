@@ -15,9 +15,27 @@
         <span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-syn-gold rounded-full border border-syn-dark"></span>
       </button>
 
-      <button class="w-10 h-10 rounded-full overflow-hidden border border-syn-border hover:border-syn-accent/50 transition-colors">
-        <img src="https://i.pravatar.cc/150?img=11" alt="Profile" class="w-full h-full object-cover" />
-      </button>
+      <NuxtLink to="/dashboard/profile" class="flex items-center gap-3 group">
+        <div class="text-right hidden sm:block">
+          <p class="text-xs font-semibold text-syn-cream group-hover:text-syn-accent transition-colors">{{ user?.name || 'User' }}</p>
+          <p class="text-[10px] text-syn-muted group-hover:text-syn-muted/80">{{ user?.role || 'Entrepreneur' }}</p>
+        </div>
+        <div class="w-10 h-10 rounded-full overflow-hidden border border-syn-border group-hover:border-syn-accent/50 transition-colors">
+          <img :src="user?.google_id ? `https://ui-avatars.com/api/?name=${user.name}&background=10B981&color=fff` : 'https://i.pravatar.cc/150?img=11'" alt="Profile" class="w-full h-full object-cover" />
+        </div>
+      </NuxtLink>
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { useAuth } from '~/composables/useAuth';
+
+const { user, FetchProfile } = useAuth();
+
+onMounted(async () => {
+  if (!user.value) {
+    await FetchProfile();
+  }
+});
+</script>

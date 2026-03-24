@@ -59,7 +59,6 @@ export const useAI = () => {
   const sendMessage = async (text: string) => {
     if (!currentSessionId.value || !text.trim()) return;
     
-    // Optimsitic UI: Tambahkan pesan user secara otomatis ke tampilan
     messages.value.push({
       id: Date.now(),
       session_id: currentSessionId.value,

@@ -10,13 +10,6 @@
     </div>
 
     <div class="flex items-center gap-5 ml-auto">
-      <button class="flex items-center gap-2 bg-syn-accent hover:bg-syn-gold text-syn-darker px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-sm">
-        <Icon name="heroicons:plus" class="w-4 h-4" />
-        Add New Product
-      </button>
-
-      <div class="w-px h-8 bg-syn-border mx-1"></div>
-
       <button class="w-10 h-10 rounded-full border border-syn-border flex items-center justify-center text-syn-muted hover:text-syn-cream hover:bg-syn-surface transition-all relative">
         <Icon name="heroicons:bell" class="w-5 h-5" />
         <span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-syn-gold rounded-full border border-syn-dark"></span>

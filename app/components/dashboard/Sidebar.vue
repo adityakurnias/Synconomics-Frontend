@@ -50,7 +50,16 @@
       </NuxtLink>
       
       <NuxtLink 
-        to="/dashboard/ai-mentor" 
+        to="/business" 
+        exact-active-class="bg-syn-accent/10 border border-syn-accent/20 text-syn-accent" 
+        class="flex items-center gap-3 px-3 py-2.5 text-syn-muted hover:text-syn-cream hover:bg-syn-surface border border-transparent rounded-lg transition-all group"
+      >
+        <Icon name="heroicons:building-storefront" class="w-5 h-5 group-hover:text-syn-cream group-[.router-link-exact-active]:text-syn-accent transition-colors" />
+        <span class="font-medium text-[15px]">Business</span>
+      </NuxtLink>
+
+      <NuxtLink 
+        to="/ai/chat" 
         exact-active-class="bg-syn-accent/10 border border-syn-accent/20 text-syn-accent" 
         class="flex items-center gap-3 px-3 py-2.5 text-syn-muted hover:text-syn-cream hover:bg-syn-surface border border-transparent rounded-lg transition-all group"
       >
@@ -71,15 +80,5 @@
         <span class="font-medium text-[15px]">Settings</span>
       </NuxtLink>
     </nav>
-
-    <!-- Upgrade Card -->
-    <div class="mt-auto pt-6 px-1">
-      <div class="bg-gradient-to-br from-syn-accent to-syn-gold rounded-2xl p-4 relative overflow-hidden group">
-        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        <h3 class="text-syn-darker font-bold text-sm mb-1.5 relative z-10">Scale your business</h3>
-        <p class="text-syn-darker/80 font-medium text-[11px] leading-relaxed mb-4 relative z-10">Get advanced analytics and predictive AI.</p>
-        <button class="w-full bg-syn-darker text-syn-accent hover:text-syn-gold font-bold text-[11px] tracking-wide py-2.5 rounded-xl transition-all relative z-10 shadow-sm border border-syn-dark/20">UPGRADE PLAN</button>
-      </div>
-    </div>
   </aside>
 </template>

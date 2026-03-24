@@ -25,7 +25,7 @@ onMounted(() => {
     token.value = queryToken
 
     setTimeout(() => {
-        navigateTo('/tes')
+        navigateTo('/dashboard')
     }, 1000) 
   } else {
     navigateTo('/auth/login')

@@ -3,8 +3,16 @@ import type { ApiResponse } from '../types/api.types';
 import type { Business, BusinessMetric } from '../types/business.types';
 
 export const businessService = {
+  // Get currently logged-in user's businesses
   getAll(): Promise<ApiResponse<Business[]>> {
     return apiFetch('/business/me', {
+      method: 'GET'
+    });
+  },
+
+  // Get all registered businesses on the platform globally
+  getAllPublic(): Promise<ApiResponse<Business[]>> {
+    return apiFetch('/business', {
       method: 'GET'
     });
   },

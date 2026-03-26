@@ -246,8 +246,16 @@
                 <option value="Jasa">Jasa</option>
                 <option value="Teknologi">Teknologi</option>
                 <option value="Manufaktur">Manufaktur</option>
-                <option value="Lainnya">Lainnya</option>
+                <option value="Lainnya">Lainnya (Ketik sendiri)</option>
               </select>
+              <input 
+                v-if="form.category === 'Lainnya'" 
+                v-model="form.customCategory" 
+                type="text" 
+                placeholder="Tuliskan kategori bisnis Anda..." 
+                required 
+                class="w-full mt-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none text-sm"
+              >
             </div>
             <div>
               <label class="block text-sm text-syn-muted mb-1">Telepon</label>
@@ -297,7 +305,8 @@
           
           <div>
             <label class="block text-sm text-syn-muted mb-1">Logo Bisnis</label>
-            <input @change="handleFileChange" type="file" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-syn-accent file:text-syn-dark hover:file:bg-white text-sm text-syn-muted">
+            <input @change="handleFileChange" type="file" accept=".jpg, .jpeg, image/jpeg" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-syn-accent file:text-syn-dark hover:file:bg-white text-sm text-syn-muted">
+            <p class="text-xs text-syn-muted mt-2 italic">* Format gambar harus JPG/JPEG dan ukuran maksimal 5 MB.</p>
           </div>
 
           <button type="submit" :disabled="isSaving" class="w-full py-3 mt-4 bg-syn-accent text-syn-dark rounded-xl font-display font-medium hover:bg-white transition-colors disabled:opacity-50">
@@ -338,6 +347,7 @@ const locationError = ref('');
 const form = ref({
   name: '',
   category: 'F&B',
+  customCategory: '',
   description: '',
   phone: '',
   address: '',
@@ -393,7 +403,7 @@ const openCreateModal = () => {
   editingId.value = null;
   locationError.value = '';
   form.value = { 
-    name: '', category: 'F&B', description: '', phone: '', 
+    name: '', category: 'F&B', customCategory: '', description: '', phone: '', 
     address: '', latitude: '', longitude: '',
     whatsapp: '', instagram: '', tiktok: '', website: ''
   };
@@ -405,9 +415,14 @@ const editBusiness = (business: Business) => {
   isEditMode.value = true;
   editingId.value = business.id;
   locationError.value = '';
+  
+  const predefinedCategories = ['F&B', 'Retail', 'Jasa', 'Teknologi', 'Manufaktur'];
+  const isCustom = !predefinedCategories.includes(business.category);
+
   form.value = {
     name: business.name,
-    category: business.category,
+    category: isCustom ? 'Lainnya' : business.category,
+    customCategory: isCustom ? business.category : '',
     description: business.description || '',
     phone: business.phone || '',
     address: business.address || '',
@@ -436,7 +451,10 @@ const handleFileChange = (e: Event) => {
 const saveBusiness = async () => {
   const formData = new FormData();
   formData.append('name', form.value.name);
-  formData.append('category', form.value.category);
+  
+  const finalCategory = form.value.category === 'Lainnya' ? form.value.customCategory : form.value.category;
+  formData.append('category', finalCategory);
+  
   formData.append('description', form.value.description);
   formData.append('phone', form.value.phone);
   formData.append('address', form.value.address);

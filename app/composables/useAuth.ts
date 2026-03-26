@@ -8,13 +8,32 @@ export const useAuth = () => {
   const userCookie = useCookie<User | null>('user_data', { maxAge: 60 * 60 * 24 * 7 })
   const userState = useState<User | null>('auth_user', () => userCookie.value || null)
 
+  // Auto-fetch if token exists but state is empty (e.g. on refresh)
+  if (tokenCookie.value && !userState.value && import.meta.client) {
+    onMounted(() => {
+      FetchProfile()
+    })
+  }
+
   const FetchProfile = async () => {
     if (!tokenCookie.value) return null
     try {
       const response = await authService.getProfile()
-      userState.value = response.data
-      userCookie.value = response.data
-      return response.data
+      const userData = response.data as any
+      const userObj = userData?.user || userData
+      
+      console.log('[useAuth] FetchProfile response data:', JSON.stringify(userData))
+      
+      if (userObj && userObj.id) {
+        // Preserve existing avatar if new data doesn't provide one
+        if (!userObj.avatar && userState.value?.avatar) {
+          userObj.avatar = userState.value.avatar;
+        }
+        userState.value = userObj
+        userCookie.value = userObj
+        return userObj
+      }
+      return null
     } catch (error) {
       console.error('Fetch Profile Error:', error)
       return null
@@ -24,9 +43,15 @@ export const useAuth = () => {
   const UpdateProfile = async (payload: { name?: string; email?: string }) => {
     try {
       const response = await authService.updateProfile(payload)
-      userState.value = response.data
-      userCookie.value = response.data
-      return response.data
+      const userData = response.data as any
+      const userObj = userData?.user || userData
+      
+      if (userObj && userObj.id) {
+        userState.value = userObj
+        userCookie.value = userObj
+        return userObj
+      }
+      return null
     } catch (error) {
       console.error('Update Profile Error:', error)
       throw error
@@ -35,7 +60,8 @@ export const useAuth = () => {
 
   const Login = async (payload: any) => {
     try {
-      const raw: any = await $fetch('https://api-synconomics.synchronizeteams.com/api/auth/login', {
+      const url = `${config.public.apiBase}/api/auth/login`
+      const raw: any = await $fetch(url, {
         method: 'POST',
         body: payload
       })
@@ -47,12 +73,24 @@ export const useAuth = () => {
 
       if (token) {
         tokenCookie.value = token
-        await FetchProfile()
+        
+        // Populate user state from response if available
+        const userData = raw?.user || raw?.data?.user || raw?.data || null
+        if (userData && userData.id) {
+          // Merge avatar if present at the top level of raw response
+          if (raw?.avatar && typeof userData === 'object') {
+            userData.avatar = raw.avatar;
+          }
+          userState.value = userData
+          userCookie.value = userData
+        } else {
+          await FetchProfile()
+        }
       } else {
         console.error('[useAuth] CRITICAL: Token tidak ditemukan di response!', raw)
       }
 
-      navigateTo('/dashboard')
+      await navigateTo('/dashboard')
       return raw
     } catch (error) {
       console.error('Login Error:', error)
@@ -64,15 +102,22 @@ export const useAuth = () => {
     try {
       const response = await authService.register(payload)
       const data = response.data as any
+      const userObj = data?.user || data
       
       if (data.token || data.access_token) {
         tokenCookie.value = data.token || data.access_token
       }
       
-      userState.value = data.user || data
-      userCookie.value = userState.value
+      if (userObj && userObj.id) {
+        // Merge avatar if present at the top level of data response
+        if (data?.avatar && typeof userObj === 'object') {
+          userObj.avatar = data.avatar;
+        }
+        userState.value = userObj
+        userCookie.value = userObj
+      }
       
-      navigateTo('/dashboard')
+      await navigateTo('/dashboard')
       return data
     } catch (error) {
       console.error('Register Error:', error)

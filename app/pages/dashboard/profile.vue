@@ -7,15 +7,15 @@
         <div class="absolute top-0 right-0 p-8 opacity-5">
           <Icon name="heroicons:user-circle" class="w-32 h-32" />
         </div>
-        
+
         <div class="flex flex-col md:flex-row items-center gap-8">
           <div class="relative">
             <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-syn-accent/30 p-1 bg-syn-dark">
-              <img :src="user?.google_id ? `https://ui-avatars.com/api/?name=${user.name}&background=10B981&color=fff&size=200` : 'https://i.pravatar.cc/150?img=11'" 
+              <img :src="avatarUrl"
                    alt="Avatar" class="w-full h-full object-cover rounded-full" />
             </div>
           </div>
-          
+
           <div class="md:text-left space-y-2">
             <h1 class="font-display text-3xl text-syn-cream">{{ user?.name || 'Loading...' }}</h1>
             <div class="flex flex-wrap justify-center md:justify-start gap-4">
@@ -45,18 +45,18 @@
             <Icon name="heroicons:cog-6-tooth" class="w-5 h-5 text-syn-accent" />
             Pengaturan Profil
           </h3>
-          
+
           <form @submit.prevent="handleUpdate" class="space-y-6">
             <div class="space-y-4">
               <div class="group">
                 <label class="block text-xs font-semibold text-syn-muted mb-2 group-focus-within:text-syn-accent transition-colors uppercase tracking-widest">Nama Lengkap</label>
-                <input v-model="form.name" type="text" placeholder="Masukkan nama" 
+                <input v-model="form.name" type="text" placeholder="Masukkan nama"
                        class="w-full bg-syn-dark border border-white/10 rounded-xl px-4 py-3 text-syn-cream outline-none focus:border-syn-accent/50 transition-all shadow-inner" />
               </div>
-              
+
               <div class="group">
                 <label class="block text-xs font-semibold text-syn-muted mb-2 group-focus-within:text-syn-accent transition-colors uppercase tracking-widest">Alamat Email</label>
-                <input v-model="form.email" type="email" placeholder="email@example.com" 
+                <input v-model="form.email" type="email" placeholder="email@example.com"
                   class="w-full bg-syn-dark border border-white/10 rounded-xl px-4 py-3 text-syn-cream outline-none focus:border-syn-accent/50 transition-all shadow-inner" />
               </div>
             </div>
@@ -65,7 +65,7 @@
               {{ message.text }}
             </div>
 
-            <button type="submit" :disabled="isUpdating" 
+            <button type="submit" :disabled="isUpdating"
               class="w-full py-4 bg-syn-accent text-syn-dark font-display font-bold rounded-xl hover:bg-white transition-all transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-syn-accent/10">
               <Icon v-if="isUpdating" name="svg-spinners:ring-resize" class="w-5 h-5" />
               Simpan Perubahan
@@ -73,9 +73,7 @@
           </form>
         </div>
 
-        <div class="bg-red-500/5 border border-red-500/10 rounded-2xl p-8 backdrop-blur-md">
-          <h3 class="font-display text-xl mb-4 text-red-400">Zona Bahaya</h3>
-          <p class="text-syn-muted text-sm mb-6">Tindakan ini permanen. Setelah Anda keluar, Anda harus masuk kembali untuk mengakses data Anda.</p>
+        <div class="rounded-2xl p-8 backdrop-blur-md">
           <button @click="Logout" class="px-6 py-3 border border-red-500/20 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all font-semibold text-sm">
             Keluar dari Akun
           </button>
@@ -95,8 +93,8 @@
               </div>
               <span class="text-xs font-semibold text-syn-cream">{{ formatDate(user?.created_at) }}</span>
             </div>
-            
-            <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+
+            <!-- <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-syn-accent/20 flex items-center justify-center text-syn-accent">
                   <Icon name="heroicons:status-online" class="w-4 h-4" />
@@ -104,7 +102,7 @@
                 <span class="text-xs text-syn-muted">Status Akun</span>
               </div>
               <span class="text-xs font-semibold text-syn-accent">Aktif</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -120,7 +118,23 @@ definePageMeta({
   middleware: 'auth'
 });
 
+const config = useRuntimeConfig();
 const { user, FetchProfile, UpdateProfile, Logout } = useAuth();
+
+const avatarUrl = computed(() => {
+  if (user.value?.avatar) {
+    if (user.value.avatar.startsWith('http')) {
+      return user.value.avatar;
+    }
+    // Handle both cases: if avatar already has 'public/' or needs it
+    const path = user.value.avatar.startsWith('/') ? user.value.avatar : `/${user.value.avatar}`;
+    return `${config.public.apiBase}${path}`;
+  }
+
+  // Fallback to Google UI avatar or generic one
+  const nameForAvatar = user.value?.name || 'User';
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(nameForAvatar)}&background=10B981&color=fff&size=200`;
+});
 
 const form = ref({
   name: user.value?.name || '',
@@ -131,8 +145,22 @@ const isUpdating = ref(false);
 const message = ref<{ type: 'success' | 'error', text: string } | null>(null);
 
 onMounted(async () => {
+  console.log('[Profile] Initial user state:', JSON.stringify(user.value));
   if (!user.value) {
-    await FetchProfile();
+    const data = await FetchProfile();
+    console.log('[Profile] Fetched profile data:', JSON.stringify(data));
+    if (data) {
+      form.value.name = data.name;
+      form.value.email = data.email;
+    }
+  }
+});
+
+watchEffect(() => {
+  if (user.value) {
+    console.log('[Profile] Reactive user update:', JSON.stringify(user.value));
+    console.log('[Profile] avatar field:', user.value.avatar);
+    console.log('[Profile] computed avatarUrl:', avatarUrl.value);
   }
 });
 

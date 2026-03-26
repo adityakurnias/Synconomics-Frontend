@@ -6,21 +6,21 @@
       <div class="relative z-10">
         <h1 class="text-3xl font-serif text-white mb-2 tracking-tight">Financial management</h1>
         <p class="text-syn-muted text-[15px]">Monitor the financial health of your core business.</p>
-        
-        <div class="mt-4 flex items-center gap-3" v-if="businesses.length > 0">
+
+        <!-- <div class="mt-4 flex items-center gap-3" v-if="businesses.length > 0">
           <label class="text-sm text-syn-muted font-medium">Pilih Bisnis:</label>
-          <select 
-            v-model="activeBusinessId" 
+          <select
+            v-model="activeBusinessId"
             @change="handleBusinessChange"
             class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-syn-cream focus:outline-none focus:border-syn-accent/50 appearance-none pr-8 cursor-pointer"
             style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23A3A3A3%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.7rem top 50%; background-size: 0.65rem auto;"
           >
             <option v-for="b in businesses" :key="b.id" :value="b.id">{{ b.name }}</option>
           </select>
-        </div>
+        </div> -->
       </div>
       <div class="relative z-10 hidden sm:block">
-        <button 
+        <button
           @click="openCreateModal"
           v-if="activeBusinessId"
           class="px-5 py-3 bg-syn-accent/10 text-syn-accent border border-syn-accent/20 rounded-xl font-medium hover:bg-syn-accent hover:text-syn-dark transition-all flex items-center gap-2"
@@ -41,23 +41,23 @@
 
     <!-- stats ny biar ga lupa -->
     <div v-if="activeBusinessId" class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      <DashboardStatCard 
-        title="Total Income" 
-        :value="formatCurrency(totalRevenue)" 
+      <DashboardStatCard
+        title="Total Income"
+        :value="formatCurrency(totalRevenue)"
         :trend="0"
         icon="heroicons:arrow-trending-up"
         iconColor="success"
       />
-      <DashboardStatCard 
-        title="Total Expenditures" 
-        :value="formatCurrency(totalCost)" 
+      <DashboardStatCard
+        title="Total Expenditures"
+        :value="formatCurrency(totalCost)"
         :trend="0"
         icon="heroicons:arrow-trending-down"
         iconColor="danger"
       />
-      <DashboardStatCard 
-        title="Net profit" 
-        :value="formatCurrency(netProfit)" 
+      <DashboardStatCard
+        title="Net profit"
+        :value="formatCurrency(netProfit)"
         :trend="0"
         icon="heroicons:banknotes"
         iconColor="accent"
@@ -68,18 +68,18 @@
     <div v-if="activeBusinessId" class="glass-card rounded-3xl overflow-hidden border border-white/5">
       <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/2">
         <h2 class="font-display text-xl text-white">Transaction History</h2>
-        <button 
+        <button
           @click="showModal = true"
           class="sm:hidden p-2 bg-syn-accent/10 text-syn-accent rounded-lg"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </button>
       </div>
-      
+
       <div v-if="expensesLoading" class="p-12 flex justify-center">
         <div class="w-8 h-8 border-4 border-syn-accent border-t-transparent rounded-full animate-spin"></div>
       </div>
-      
+
       <div v-else-if="expenses.length === 0" class="p-12 text-center">
         <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4 text-syn-muted">
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
@@ -110,8 +110,8 @@
                 {{ item.title }}
               </td>
               <td class="px-6 py-4">
-                <span 
-                  :class="['px-2.5 py-1 text-xs rounded-full font-medium border', 
+                <span
+                  :class="['px-2.5 py-1 text-xs rounded-full font-medium border',
                     item.category === 'revenue' ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20']"
                 >
                   {{ item.category === 'revenue' ? 'Income' : 'Expenditure' }}
@@ -136,9 +136,9 @@
       </div>
     </div>
 
-    <DashboardExpenseFormModal 
-      v-if="showModal" 
-      :business-id="activeBusinessId" 
+    <DashboardExpenseFormModal
+      v-if="showModal"
+      :business-id="activeBusinessId"
       :initialData="selectedExpense"
       @close="closeModal"
       @saved="onExpenseSaved"

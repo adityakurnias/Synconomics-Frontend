@@ -4,7 +4,7 @@ import type { Business, BusinessMetric } from '../types/business.types';
 
 export const businessService = {
   getAll(): Promise<ApiResponse<Business[]>> {
-    return apiFetch('/business', {
+    return apiFetch('/business/me', {
       method: 'GET'
     });
   },

@@ -24,7 +24,7 @@ export const apiFetch = $fetch.create({
   
   onResponseError({ response }) {
     if (response.status === 401) {
-      const token = useCookie("token");
+      const token = useCookie("auth_token");
       token.value = null;
       
       if (import.meta.client) {

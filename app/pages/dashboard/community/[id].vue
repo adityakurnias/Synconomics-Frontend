@@ -13,14 +13,17 @@
     <!-- Main Thread -->
     <div v-else-if="currentThread" class="glass-card rounded-3xl border border-white/5 overflow-hidden">
       <!-- Author info -->
-      <div class="p-6 sm:p-8 flex items-start gap-4 border-b border-white/5 bg-white/2">
+      <div class="p-6 sm:p-8 flex items-start gap-4 border-b border-white/5 bg-white/2 relative">
         <div class="w-12 h-12 rounded-full bg-syn-darker border border-white/10 flex items-center justify-center shrink-0">
           <span class="text-syn-accent font-medium text-xl">{{ currentThread.user?.name?.charAt(0) || '?' }}</span>
         </div>
         <div class="flex-1 mt-1">
           <div class="flex items-center justify-between">
             <h2 class="font-medium text-white text-lg">{{ currentThread.user?.name || 'Unknown User' }}</h2>
-            <span class="text-sm text-syn-muted">{{ formatDate(currentThread.created_at) }}</span>
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-syn-muted">{{ formatDate(currentThread.created_at) }}</span>
+              <button v-if="user && currentThread.user_id === user.id" @click.prevent="handleDeleteThreadDetail" class="text-xs text-red-400 hover:text-red-300 transition-colors bg-red-400/10 hover:bg-red-400/20 px-3 py-1.5 rounded-lg border border-red-400/20 font-medium">Hapus Thread</button>
+            </div>
           </div>
           <p class="text-sm text-syn-muted">{{ currentThread.user?.email || 'No contact info' }}</p>
         </div>
@@ -112,13 +115,14 @@ definePageMeta({
 });
 
 const route = useRoute();
+const router = useRouter();
 const { user } = useAuth();
 const threadId = computed(() => Number(route.params.id));
 
 const { 
   currentThread, replies, 
   isLoading, isSaving, 
-  fetchThreadById, fetchReplies, createReply, updateReply 
+  fetchThreadById, fetchReplies, createReply, updateReply, deleteThread
 } = useCommunity();
 
 const replyContent = ref('');
@@ -147,9 +151,23 @@ const handleReply = async () => {
       content: replyContent.value
     });
     replyContent.value = '';
-    // Optional: await fetchReplies(threadId.value);
+    // Ambil ulang threads setelah create biar ngisi relasi usernamenya :)
+    await fetchReplies(threadId.value);
   } catch (err) {
     console.error('Failed to post reply', err);
+  }
+};
+
+const handleDeleteThreadDetail = async () => {
+  if (confirm(`Yakin ingin menghapus thread "${currentThread.value?.title}"?`)) {
+    try {
+      if (threadId.value) {
+         await deleteThread(threadId.value);
+         router.push('/dashboard/community');
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 };
 

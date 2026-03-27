@@ -38,18 +38,6 @@
         </div>
 
         <div>
-          <label class="block text-sm text-syn-muted mb-2 font-medium">Harga / Unit (Rp)</label>
-          <input 
-            v-model.number="form.price" 
-            type="number" 
-            required 
-            min="0"
-            placeholder="Misal: 50000"
-            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-syn-accent outline-none text-white placeholder-white/20 transition-colors"
-          >
-        </div>
-
-        <div>
           <label class="block text-sm text-syn-muted mb-2 font-medium">Product ID (Opsional)</label>
           <input 
             v-model.number="form.product_id" 
@@ -111,8 +99,6 @@ const form = ref<CreateSupplyOfferReq>({
   business_id: props.businessId,
   product_name: props.initialData?.product_name || '',
   quantity: props.initialData?.quantity || 1,
-  price: props.initialData?.price || 0,
-  status: props.initialData?.status || 'open',
   product_id: props.initialData?.product_id,
   description: props.initialData?.description || (props.targetBusinessName ? `[@${props.targetBusinessName}] ` : '')
 });
@@ -123,8 +109,6 @@ watch(() => props.initialData, (newVal) => {
       business_id: props.businessId,
       product_name: newVal.product_name,
       quantity: newVal.quantity,
-      price: newVal.price,
-      status: newVal.status,
       product_id: newVal.product_id,
       description: newVal.description || ''
     };
@@ -134,8 +118,6 @@ watch(() => props.initialData, (newVal) => {
       business_id: props.businessId,
       product_name: '',
       quantity: 1,
-      price: 0,
-      status: 'open',
       product_id: undefined,
       description: props.targetBusinessName ? `[@${props.targetBusinessName}] ` : ''
     };
@@ -143,7 +125,7 @@ watch(() => props.initialData, (newVal) => {
 }, { immediate: true });
 
 const handleSubmit = async () => {
-  if (!form.value.product_name || !form.value.quantity || form.value.price === undefined || !props.businessId) return;
+  if (!form.value.product_name || !form.value.quantity || !props.businessId) return;
 
   isSubmitting.value = true;
   errorMsg.value = '';
@@ -152,8 +134,6 @@ const handleSubmit = async () => {
       business_id: props.businessId,
       product_name: form.value.product_name,
       quantity: form.value.quantity,
-      price: form.value.price,
-      status: form.value.status,
       description: form.value.description // Include description
     };
     if (form.value.product_id) {

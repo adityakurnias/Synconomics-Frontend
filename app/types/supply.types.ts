@@ -42,8 +42,6 @@ export interface CreateSupplyOfferReq {
   business_id: number;
   product_name: string;
   quantity: number;
-  price: number;
-  status: string;
   product_id?: number;
   description?: string;
 }

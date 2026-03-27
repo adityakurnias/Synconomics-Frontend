@@ -20,7 +20,7 @@
           </h1>
           
           <p class="max-w-2xl mx-auto text-lg md:text-xl text-syn-cream/70 font-light leading-relaxed mb-12">
-              Platform ERP pertama dengan AI Business Mentor yang memetakan ekosistem ekonomi dalam radius 1km. 
+              Platform ERP pertama dengan AI Business Mentor yang memetakan ekosistem ekonomi dalam peta. 
               Dari ide hingga profit, terhubung dengan komunitas bisnis terdekat.
           </p>
           
@@ -43,23 +43,10 @@
               </svg>
           </div>
       </div>
-
-      <!-- Floating Stats -->
-      <div class="absolute bottom-10 left-6 md:left-20 glass-card p-4 rounded-2xl hidden md:block transform hover:scale-105 transition-transform duration-500">
-          <div class="text-xs text-syn-muted uppercase tracking-wider mb-1">Radius Komunitas</div>
-          <div class="font-display text-2xl text-syn-accent">1-5 km</div>
-      </div>
-      
-      <div class="absolute top-1/3 right-6 md:right-20 glass-card p-4 rounded-2xl hidden md:block transform hover:scale-105 transition-transform duration-500">
-          <div class="text-xs text-syn-muted uppercase tracking-wider mb-1">AI Model</div>
-          <div class="font-display text-2xl text-syn-gold">GPT-4o</div>
-      </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-
 onMounted(() => {
   const initAnimations = () => {
     if (typeof (window as any).gsap === 'undefined') return setTimeout(initAnimations, 100);

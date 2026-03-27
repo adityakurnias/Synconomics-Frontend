@@ -12,13 +12,13 @@
 
     <div class="bg-syn-dark border border-syn-border rounded-3xl overflow-hidden glass-card relative min-h-[400px]">
        <div class="absolute top-0 right-0 w-64 h-64 bg-syn-accent/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-       
+
        <div v-if="isLoading" class="p-20 flex flex-col items-center justify-center text-syn-muted gap-4">
          <Icon name="heroicons:sparkles" class="w-10 h-10 text-syn-accent animate-pulse" />
          <p class="text-lg">AI sedang melakukan audit mendalam...</p>
          <p class="text-xs opacity-60">Mohon tunggu, ini mungkin memakan waktu beberapa detik.</p>
        </div>
-       
+
        <div v-else-if="error" class="p-20 flex flex-col items-center justify-center text-syn-danger text-center gap-4">
          <Icon name="heroicons:exclamation-triangle" class="w-10 h-10" />
          <div class="space-y-2">
@@ -31,7 +31,7 @@
        </div>
 
        <div v-else-if="auditResult" class="p-10 md:p-16">
-          <div class="prose-audit-full max-w-none" v-html="formattedAudit"></div>
+          <div class="prose-audit-full max-w-none max-h-none" v-html="formattedAudit"></div>
        </div>
 
        <div v-else class="p-20 flex flex-col items-center justify-center text-syn-muted text-center gap-4">
@@ -58,7 +58,7 @@ const { isLoading, error, auditResult, getAudit } = useAI();
 
 const formattedAudit = computed(() => {
   if (!auditResult.value) return '';
-  
+
   // Simple markdown-to-html formatter
   return auditResult.value
     .replace(/^# (.*)/gm, '<h1 class="text-2xl font-bold text-syn-cream mb-6 border-b border-syn-border pb-4 font-serif">$1</h1>')

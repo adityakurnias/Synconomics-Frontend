@@ -4,12 +4,12 @@ import type { Transaction, TransactionItem, CreateTransactionRequest, CreateTran
 import type { Product } from '../types/product.types';
 
 export const useTransaction = () => {
-  const isLoading = ref(false);
-  const error = ref<string | null>(null);
-  const transactions = ref<Transaction[]>([]);
+  const isLoading = useState('transaction-is-loading', () => false);
+  const error = useState<string | null>('transaction-error', () => null);
+  const transactions = useState<Transaction[]>('transaction-list', () => []);
   
   // POS Cart State
-  const cart = ref<Array<{ product: Product; quantity: number }>>([]);
+  const cart = useState<Array<{ product: Product; quantity: number }>>('pos-cart', () => []);
   
   const cartTotal = computed(() => {
     return cart.value.reduce((total, item) => total + (item.product.price * item.quantity), 0);

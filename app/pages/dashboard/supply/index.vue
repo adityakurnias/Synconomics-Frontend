@@ -114,6 +114,7 @@ onMounted(async () => {
   checkLeafletLoaded();
   await fetchPublicBusinesses();
   await fetchBusinesses();
+  console.log('[SupplyNetwork] My Businesses:', JSON.stringify(myBusinesses.value));
 
   // Fix currentBusinessId selection logic
   if (currentBusiness.value) {

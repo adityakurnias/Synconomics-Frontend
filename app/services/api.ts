@@ -1,4 +1,4 @@
-import { useAuth } from "~/composables/useAuth"; // atau path yang sesuai
+import { useCookie } from '#app'; // Import useCookie directly
 
 export const apiFetch = $fetch.create({
   onRequest({ request, options }) {
@@ -12,9 +12,9 @@ export const apiFetch = $fetch.create({
     const headers = new Headers(options.headers);
     
     // 4. Fix: Ambil token dari cookie secara manual (lebih reliable di $fetch)
-    const { token } = useAuth();
-    if (token.value) {
-      headers.set("Authorization", `Bearer ${token.value}`);
+    const tokenCookie = useCookie<string | null>('auth_token'); // Directly access the cookie
+    if (tokenCookie.value) {
+      headers.set("Authorization", `Bearer ${tokenCookie.value}`);
     }
 
     options.headers = headers;

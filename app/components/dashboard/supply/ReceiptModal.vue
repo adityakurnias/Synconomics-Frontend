@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+  <div class="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
     <div class="glass-card max-w-sm w-full p-0 overflow-hidden rounded-3xl animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-y-auto">
       <!-- Modal Header -->
       <div class="px-6 py-4 flex justify-between items-center bg-white/5 border-b border-white/10">

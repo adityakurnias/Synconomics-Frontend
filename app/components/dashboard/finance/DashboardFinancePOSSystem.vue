@@ -69,7 +69,7 @@
         <div v-else class="flex-1 flex flex-col overflow-hidden">
           <div class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar mb-6">
             <div v-for="item in cart" :key="item.product.id" class="flex items-center gap-3 group">
-              <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/5 overflow-hidden flex-shrink-0 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/5 overflow-hidden shrink-0 flex items-center justify-center">
                 <img v-if="item.product.image_url" :src="getImageUrl(item.product.image_url)" class="w-full h-full object-cover" />
                 <Icon v-else name="heroicons:cube" class="w-5 h-5 text-syn-muted" />
               </div>
@@ -81,7 +81,7 @@
                 <button @click="updateQuantity(item.product.id, item.quantity - 1)" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors">
                   <Icon name="heroicons:minus" class="w-3 h-3 text-white" />
                 </button>
-                <span class="text-xs font-medium min-w-[20px] text-center text-white">{{ item.quantity }}</span>
+                <input type="text" inputmode="numeric" pattern="[0-9]*" v-model="item.quantity" class="text-xs font-medium w-5 text-center text-white bg-transparent border-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                 <button @click="addToCart(item.product)" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors">
                   <Icon name="heroicons:plus" class="w-3 h-3 text-white" />
                 </button>

@@ -18,7 +18,7 @@ export const useTransaction = () => {
   const addToCart = (product: Product) => {
     const existingItem = cart.value.find(item => item.product.id === product.id);
     if (existingItem) {
-      existingItem.quantity += 1;
+      existingItem.quantity = Number(existingItem.quantity) + 1;
     } else {
       cart.value.push({ product, quantity: 1 });
     }
@@ -28,10 +28,10 @@ export const useTransaction = () => {
     cart.value = cart.value.filter(item => item.product.id !== productId);
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (productId: number, quantity: any) => {
     const item = cart.value.find(item => item.product.id === productId);
     if (item) {
-      item.quantity = Math.max(1, quantity);
+      item.quantity = Math.max(1, Number(quantity));
     }
   };
 

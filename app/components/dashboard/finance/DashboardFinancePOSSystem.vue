@@ -81,7 +81,7 @@
                 <button @click="updateQuantity(item.product.id, item.quantity - 1)" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors">
                   <Icon name="heroicons:minus" class="w-3 h-3 text-white" />
                 </button>
-                <input type="text" inputmode="numeric" pattern="[0-9]*" v-model="item.quantity" class="text-xs font-medium w-5 text-center text-white bg-transparent border-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                <input type="text" inputmode="numeric" pattern="[0-9]*" v-model.number="item.quantity" class="text-xs font-medium w-5 text-center text-white bg-transparent border-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                 <button @click="addToCart(item.product)" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors">
                   <Icon name="heroicons:plus" class="w-3 h-3 text-white" />
                 </button>

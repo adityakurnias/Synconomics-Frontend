@@ -6,5 +6,5 @@ export interface Expense {
   category: string;
   description?: string;
   expense_date: string;
-  createdAt?: string;
+  created_at?: string;
 }

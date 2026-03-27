@@ -33,7 +33,7 @@
           class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/5 transition-colors group"
         >
           <div class="col-span-3">
-            <span class="text-xs text-syn-muted">{{ formatDate(expense.expense_date || expense.createdAt || '') }}</span>
+            <span class="text-xs text-syn-muted">{{ formatDate(expense.expense_date || expense.created_at || '') }}</span>
           </div>
           <div class="col-span-4">
             <p class="text-[10px] text-syn-accent uppercase font-black tracking-widest mb-0.5">{{ expense.category }}</p>
@@ -82,8 +82,8 @@ const editingExpense = ref<any>(null);
 
 const sortedExpenses = computed(() => {
   return [...expenses.value].sort((a, b) => {
-    const dateA = new Date(a.expense_date || a.createdAt || 0).getTime();
-    const dateB = new Date(b.expense_date || b.createdAt || 0).getTime();
+    const dateA = new Date(a.expense_date || a.created_at || 0).getTime();
+    const dateB = new Date(b.expense_date || b.created_at || 0).getTime();
     return dateB - dateA;
   });
 });

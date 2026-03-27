@@ -42,8 +42,8 @@
           class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/5 transition-colors cursor-pointer group"
         >
           <div class="col-span-3">
-            <p class="text-sm font-medium text-white">{{ formatDate(tx.transaction_date || tx.createdAt || '') }}</p>
-            <p class="text-[10px] text-syn-muted">{{ formatTime(tx.transaction_date || tx.createdAt || '') }}</p>
+            <p class="text-sm font-medium text-white">{{ formatDate(tx.transaction_date || tx.created_at || '') }}</p>
+            <p class="text-[10px] text-syn-muted">{{ formatTime(tx.transaction_date || tx.created_at || '') }}</p>
           </div>
           <div class="col-span-3">
             <span class="text-xs font-mono text-syn-muted group-hover:text-syn-accent transition-colors">
@@ -91,8 +91,8 @@ const selectedTx = ref<any>(null);
 
 const filteredTransactions = computed(() => {
   let list = [...transactions.value].sort((a, b) => {
-    const dateA = new Date(a.transaction_date || a.createdAt || 0).getTime();
-    const dateB = new Date(b.transaction_date || b.createdAt || 0).getTime();
+    const dateA = new Date(a.transaction_date || a.created_at || 0).getTime();
+    const dateB = new Date(b.transaction_date || b.created_at || 0).getTime();
     return dateB - dateA;
   });
   

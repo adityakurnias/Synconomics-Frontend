@@ -7,7 +7,7 @@ export interface Transaction {
   payment_method: string;
   status: 'pending' | 'completed' | 'cancelled';
   transaction_date: string;
-  createdAt?: string;
+  created_at?: string;
   transactionItems?: TransactionItem[];
 }
 
@@ -17,7 +17,7 @@ export interface TransactionItem {
   product_id: number;
   quantity: number;
   price: number;
-  createdAt?: string;
+  created_at?: string;
   product?: Product;
 }
 

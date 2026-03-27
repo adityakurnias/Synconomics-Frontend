@@ -61,7 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue';
 import { useBusiness } from '~/composables/useBusiness';
 import type { BusinessMetric, Business } from '~/types/business.types';
 
@@ -69,30 +68,21 @@ definePageMeta({
   layout: 'dashboard'
 });
 
-const { metrics, isLoading: isLoadingMetrics, fetchMetrics, currentBusiness, fetchBusinesses } = useBusiness();
+const { metrics, isLoading: isLoadingMetrics, fetchMetrics, businesses, fetchBusinesses } = useBusiness();
 
 const currentBusinessId = ref<number | null>(null);
 
 onMounted(async () => {
-  await fetchMetrics();
-  await fetchBusinesses(); // Fetch businesses to populate currentBusiness
-
-  if (currentBusiness.value) {
-    currentBusinessId.value = currentBusiness.value.id;
-  } else if (metrics.value.length > 0) {
-    // Fallback: if currentBusiness is not set, try to get business_id from a metric
-    currentBusinessId.value = metrics.value[0]?.business_id ?? 1;
-  } else {
-    // Fallback: if no business or metrics, use a default or handle error
-    console.warn("No current business or metrics found. Using a placeholder business ID (1) for product management.");
-    currentBusinessId.value = 1; // Placeholder, ideally this should be handled by user selection or proper auth flow
+  await fetchBusinesses();
+  const firstBusiness = businesses.value?.[0];
+  if (firstBusiness) {
+    currentBusinessId.value = firstBusiness.id;
   }
+  await fetchMetrics();
 });
 
 const latestMetric = computed<BusinessMetric | null>(() => {
   if (metrics.value && metrics.value.length > 0) {
-    // Assuming the latest metric is the first one in the array if sorted by date desc
-    // A more robust solution would sort by period_end or created_at.
     return metrics.value[0] ?? null; 
   }
   return null;

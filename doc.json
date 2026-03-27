@@ -2199,6 +2199,31 @@
                 }
             }
         },
+        "/market-trends/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Memicu AI untuk menganalisis log pencarian dan memperbarui tabel tren pasar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "market-trends"
+                ],
+                "summary": "Refresh tren pasar dari log pencarian",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/market-trends/top": {
             "get": {
                 "security": [
@@ -2825,6 +2850,18 @@
                         "type": "integer",
                         "description": "Stock",
                         "name": "stock",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Min Stock",
+                        "name": "min_stock",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Product Image",
+                        "name": "image_url",
                         "in": "formData"
                     }
                 ],
@@ -4876,6 +4913,9 @@
                 },
                 "session_id": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -4893,6 +4933,9 @@
                 },
                 "session_id": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -4909,6 +4952,9 @@
                     "type": "integer"
                 },
                 "type": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -4945,6 +4991,9 @@
                 },
                 "total_revenue": {
                     "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -4955,6 +5004,9 @@
                     "type": "string"
                 },
                 "category": {
+                    "type": "string"
+                },
+                "created_at": {
                     "type": "string"
                 },
                 "description": {
@@ -4969,6 +5021,9 @@
                 "latitude": {
                     "type": "number"
                 },
+                "logo_url": {
+                    "type": "string"
+                },
                 "longitude": {
                     "type": "number"
                 },
@@ -4979,6 +5034,9 @@
                     "type": "string"
                 },
                 "tiktok": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {
@@ -5009,6 +5067,9 @@
                 },
                 "score": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -5328,6 +5389,9 @@
                 "category": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "expense_date": {
                     "type": "string"
                 },
@@ -5335,6 +5399,9 @@
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -5359,6 +5426,9 @@
                 },
                 "search_count": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -5391,6 +5461,9 @@
                 },
                 "stock": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -5404,6 +5477,9 @@
                     "type": "integer"
                 },
                 "keyword": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 },
                 "user_id": {
@@ -5425,6 +5501,9 @@
                 },
                 "thread_id": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 },
                 "user": {
                     "$ref": "#/definitions/dto.UserResponse"
@@ -5451,6 +5530,9 @@
                 },
                 "supply_request_id": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -5463,14 +5545,11 @@
                 "created_at": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "price": {
-                    "type": "number"
+                "product_id": {
+                    "type": "integer"
                 },
                 "product_name": {
                     "type": "string"
@@ -5478,7 +5557,7 @@
                 "quantity": {
                     "type": "integer"
                 },
-                "status": {
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -5492,9 +5571,6 @@
                 "created_at": {
                     "type": "string"
                 },
-                "description": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -5505,6 +5581,9 @@
                     "type": "integer"
                 },
                 "status": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -5524,6 +5603,9 @@
                 "title": {
                     "type": "string"
                 },
+                "updated_at": {
+                    "type": "string"
+                },
                 "user": {
                     "$ref": "#/definitions/dto.UserResponse"
                 },
@@ -5538,8 +5620,17 @@
                 "business_id": {
                     "type": "integer"
                 },
+                "created_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 },
                 "total_amount": {
                     "type": "number"
@@ -5547,7 +5638,7 @@
                 "transaction_date": {
                     "type": "string"
                 },
-                "type": {
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -5620,6 +5711,9 @@
         "dto.UpdateProfileRequest": {
             "type": "object",
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -5746,6 +5840,9 @@
         "dto.UserResponse": {
             "type": "object",
             "properties": {
+                "avatar": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -5759,6 +5856,9 @@
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

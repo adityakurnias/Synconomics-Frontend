@@ -237,7 +237,7 @@
             <input v-model="form.name" type="text" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none">
           </div>
           
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm text-syn-muted mb-1">Kategori</label>
               <select v-model="form.category" required class="w-full bg-syn-darker border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none">
@@ -268,10 +268,10 @@
             <textarea v-model="form.address" rows="2" placeholder="Masukkan alamat lengkap..." required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none mb-4"></textarea>
             
             <div class="block text-sm text-syn-muted mb-1">Koordinat Lokasi (Opsional untuk Radius)</div>
-            <div class="flex gap-2">
+            <div class="flex flex-col sm:flex-row gap-2">
               <input v-model="form.latitude" type="text" placeholder="Latitude" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none text-sm">
               <input v-model="form.longitude" type="text" placeholder="Longitude" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:border-syn-accent outline-none text-sm">
-              <button type="button" @click="getLocation" class="shrink-0 px-4 bg-syn-darker border border-white/10 hover:border-syn-accent rounded-xl text-syn-accent text-sm font-medium flex items-center gap-2">
+              <button type="button" @click="getLocation" class="shrink-0 px-4 py-2 bg-syn-darker border border-white/10 hover:border-syn-accent rounded-xl text-syn-accent text-sm font-medium flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 Track
               </button>

@@ -1,5 +1,10 @@
 <template>
-  <header class="flex items-center justify-between h-20 px-8 border-b border-syn-border bg-syn-dark/80 backdrop-blur-md sticky top-0 z-10">
+  <header class="flex items-center justify-between h-20 px-4 sm:px-8 border-b border-syn-border bg-syn-dark/80 backdrop-blur-md sticky top-0 z-10 w-full">
+    <div class="flex items-center gap-4">
+      <button @click="isSidebarOpen = true" class="md:hidden p-2 -ml-2 text-syn-muted hover:text-syn-cream transition-colors rounded-lg hover:bg-white/5">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
     <!-- <div class="flex-1 max-w-xl relative">
       <Icon name="heroicons:magnifying-glass" class="w-4 h-4 text-syn-muted absolute left-4 top-1/2 -translate-y-1/2" />
       <input
@@ -30,9 +35,11 @@
 
 <script setup lang="ts">
 import { useAuth } from '~/composables/useAuth';
+import { useState } from '#imports';
 
 const config = useRuntimeConfig();
 const { user, FetchProfile } = useAuth();
+const isSidebarOpen = useState('isSidebarOpen', () => false);
 
 const avatarUrl = computed(() => {
   if (user.value?.avatar) {

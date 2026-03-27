@@ -10,7 +10,7 @@
               Ekonomi Terdistribusi + AI
           </div>
           
-          <h1 class="font-display text-6xl md:text-8xl lg:text-9xl font-medium leading-[0.9] mb-8 tracking-tight">
+          <h1 class="font-display text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-medium leading-[0.9] mb-8 tracking-tight">
               <span class="block overflow-hidden">
                   <span class="split-line inline-block">Sinergi</span>
               </span>

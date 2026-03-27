@@ -30,7 +30,7 @@
     <!-- Active Content -->
     <div class="flex-1 flex flex-col min-h-0">
       <!-- Network Map Tab -->
-      <div v-show="activeTab === 'map'" class="glass-card rounded-3xl border border-white/5 overflow-hidden flex-1 relative min-h-[500px]">
+      <div v-show="activeTab === 'map'" class="glass-card rounded-3xl border border-white/5 overflow-hidden flex-1 relative min-h-125">
         <div v-if="isLoadingNetwork" class="absolute inset-0 bg-syn-darker/80 backdrop-blur-sm z-20 flex items-center justify-center">
           <div class="w-10 h-10 border-4 border-syn-accent border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -38,7 +38,7 @@
           <p class="text-red-300">{{ networkError }}</p>
         </div>
 
-        <div id="map" class="w-full h-full z-10 bg-[#1e1e1e]"></div>
+        <div id="map" class="absolute inset-0 z-10 bg-[#1e1e1e]"></div>
       </div>
 
       <!-- Supply Requests Tab -->
@@ -111,11 +111,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import { useSupplyNetwork } from '~/composables/useSupplyNetwork';
 import { useAuth } from '~/composables/useAuth';
 import { useBusiness } from '~/composables/useBusiness';
-import { useHead } from '#imports';
 import type { SupplyRequest, SupplyOffer } from '~/types/supply.types';
 
 // Supply Components
@@ -132,6 +130,13 @@ useHead({
       rel: 'stylesheet',
       href: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
       integrity: 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=',
+      crossorigin: ''
+    }
+  ],
+  script: [
+    {
+      src: 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+      integrity: 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=',
       crossorigin: ''
     }
   ]
@@ -234,7 +239,14 @@ onBeforeUnmount(() => {
 });
 
 // Watch tab changes to load data - fetch all to ensure lookups work
-watch(activeTab, async () => {
+watch(activeTab, async (newTab) => {
+  if (newTab === 'map') {
+    nextTick(() => {
+      if (map) {
+        map.invalidateSize();
+      }
+    });
+  }
   await Promise.all([
     fetchSupplyRequests(),
     fetchSupplyOffers(),
@@ -309,6 +321,10 @@ const handleDeleteMatch = async (id: number) => {
 const initMap = () => {
   if (typeof window === 'undefined') return;
   const L = (window as any).L;
+  if (!L || map) return;
+
+  const mapEl = document.getElementById('map');
+  if (!mapEl) return;
   
   map = L.map('map').setView([-6.2088, 106.8456], 10); // Center on Jakarta
 
@@ -352,6 +368,11 @@ const plotMarkers = () => {
 
   networkBusinesses.value.forEach(business => {
     if (business.latitude && business.longitude) {
+      const lat = parseFloat(business.latitude as unknown as string);
+      const lng = parseFloat(business.longitude as unknown as string);
+      
+      if (isNaN(lat) || isNaN(lng)) return;
+
       const isOwner = business.user_id === user.value?.id;
       
       const iconHtml = `<div style="background-color: ${isOwner ? '#f59e0b' : '#4f46e5'}; border-radius: 50%; width: 24px; height: 24px; display: flex; justify-content: center; align-items: center; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.5);"><span style="font-size: 14px;">${business.category === 'Restaurant' ? '🍽️' : '🏭'}</span></div>`;
@@ -363,7 +384,7 @@ const plotMarkers = () => {
         popupAnchor: [0, -12]
       });
 
-      const marker = L.marker([business.latitude, business.longitude], { icon: customIcon }).addTo(map);
+      const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
       
       const displayLogo = business.logo_url || 'https://via.placeholder.com/150/1a1a1a/ffffff?text=No+Logo';
       

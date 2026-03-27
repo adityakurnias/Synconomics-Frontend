@@ -106,7 +106,7 @@ const tabs = [
   { id: 'summary', name: 'Ringkasan', icon: 'heroicons:chart-pie' },
   { id: 'pos', name: 'POS (Kasir)', icon: 'heroicons:shopping-cart' },
   { id: 'history', name: 'Riwayat Transaksi', icon: 'heroicons:clock' },
-  { id: 'expenses', name: 'Manajemen Pengeluaran', icon: 'heroicons:document-minus' },
+  { id: 'expenses', name: 'Manajemen Keuangan', icon: 'heroicons:document-minus' },
 ];
 
 const fetchDataForBusiness = async () => {

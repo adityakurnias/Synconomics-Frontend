@@ -2,17 +2,16 @@
   <div class="flex flex-col space-y-6 h-full">
     <div class="flex items-center justify-between">
       <h3 class="text-xl font-display text-white">Manajemen Pengeluaran</h3>
-      <button 
-        @click="showModal = true"
-        class="px-4 py-2 bg-syn-accent text-syn-dark rounded-xl font-bold text-sm hover:bg-white transition-all flex items-center gap-2"
-      >
+      <button @click="showModal = true"
+        class="px-4 py-2 bg-syn-accent text-syn-dark rounded-xl font-bold text-sm hover:bg-white transition-all flex items-center gap-2">
         <Icon name="heroicons:plus-circle" class="w-5 h-5" />
-        Catat Pengeluaran
+          Catat Transaksi
       </button>
     </div>
 
     <div class="glass-card flex-1 overflow-hidden flex flex-col border border-white/5">
-      <div class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/10 text-[11px] font-bold text-syn-muted tracking-wider uppercase bg-white/5">
+      <div
+        class="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/10 text-[11px] font-bold text-syn-muted tracking-wider uppercase bg-white/5">
         <div class="col-span-3">Tanggal</div>
         <div class="col-span-4">Kategori & Judul</div>
         <div class="col-span-3 text-right">Jumlah</div>
@@ -22,21 +21,21 @@
       <div v-if="isLoading" class="flex-1 flex items-center justify-center">
         <div class="w-8 h-8 border-2 border-syn-accent border-t-transparent rounded-full animate-spin"></div>
       </div>
-      <div v-else-if="expenses.length === 0" class="flex-1 flex flex-col items-center justify-center text-syn-muted space-y-2">
+      <div v-else-if="expenses.length === 0"
+        class="flex-1 flex flex-col items-center justify-center text-syn-muted space-y-2">
         <Icon name="heroicons:banknotes" class="w-12 h-12 opacity-20" />
         <p>Belum ada pengeluaran yang dicatat.</p>
       </div>
       <div v-else class="flex-1 overflow-y-auto divide-y divide-white/5 custom-scrollbar">
-        <div 
-          v-for="expense in sortedExpenses" 
-          :key="expense.id"
-          class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/5 transition-colors group"
-        >
+        <div v-for="expense in sortedExpenses" :key="expense.id"
+          class="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/5 transition-colors group">
           <div class="col-span-3">
-            <span class="text-xs text-syn-muted">{{ formatDate(expense.expense_date || expense.created_at || '') }}</span>
+            <span class="text-xs text-syn-muted">{{ formatDate(expense.expense_date || expense.created_at || '')
+              }}</span>
           </div>
           <div class="col-span-4">
-            <p class="text-[10px] text-syn-accent uppercase font-black tracking-widest mb-0.5">{{ expense.category }}</p>
+            <p class="text-[10px] text-syn-accent uppercase font-black tracking-widest mb-0.5">{{ expense.category }}
+            </p>
             <p class="text-sm font-medium text-white truncate">{{ expense.title }}</p>
           </div>
           <div class="col-span-3 text-right">
@@ -44,10 +43,12 @@
           </div>
           <div class="col-span-2 text-right">
             <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button @click="editExpense(expense)" class="p-1.5 text-syn-muted hover:text-syn-accent transition-colors">
+              <button @click="editExpense(expense)"
+                class="p-1.5 text-syn-muted hover:text-syn-accent transition-colors">
                 <Icon name="heroicons:pencil-square" class="w-4 h-4" />
               </button>
-              <button @click="confirmDelete(expense.id)" class="p-1.5 text-syn-muted hover:text-red-400 transition-colors">
+              <button @click="confirmDelete(expense.id)"
+                class="p-1.5 text-syn-muted hover:text-red-400 transition-colors">
                 <Icon name="heroicons:trash" class="w-4 h-4" />
               </button>
             </div>
@@ -57,13 +58,8 @@
     </div>
 
     <!-- Expense Modal -->
-    <ExpenseFormModal 
-      v-if="showModal"
-      :business-id="businessId"
-      :initial-data="editingExpense"
-      @close="closeModal"
-      @saved="onSaved"
-    />
+    <ExpenseFormModal v-if="showModal" :business-id="businessId" :initial-data="editingExpense" @close="closeModal"
+      @saved="onSaved" />
   </div>
 </template>
 
@@ -143,9 +139,11 @@ watch(() => props.businessId, (newId) => {
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.02);
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;

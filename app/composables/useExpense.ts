@@ -3,9 +3,9 @@ import { expenseService } from '../services/expense.service';
 import type { Expense } from '../types/expense.types';
 
 export const useExpense = () => {
-  const isLoading = ref(false);
-  const error = ref<string | null>(null);
-  const expenses = ref<Expense[]>([]);
+  const isLoading = useState('expense-is-loading', () => false);
+  const error = useState<string | null>('expense-error', () => null);
+  const expenses = useState<Expense[]>('expense-list', () => []);
 
   const fetchExpenses = async (businessId: number) => {
     isLoading.value = true;

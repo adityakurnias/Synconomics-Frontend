@@ -2,24 +2,19 @@ import { useCookie } from '#app'; // Import useCookie directly
 
 export const apiFetch = $fetch.create({
   onRequest({ request, options }) {
-    // 1. Fix: Hapus spasi di akhir URL
     options.baseURL = "https://api-synconomics.synchronizeteams.com/api";
 
-    // 2. Fix: Gunakan headers yang sudah ada atau buat baru
-    options.headers = options.headers || {};
+    const tokenCookie = useCookie<string | null>('auth_token');
     
-    // 3. Fix: Normalisasi headers ke Record<string, string>
-    const headers = new Headers(options.headers);
-    
-    // 4. Fix: Ambil token dari cookie secara manual (lebih reliable di $fetch)
-    const tokenCookie = useCookie<string | null>('auth_token'); // Directly access the cookie
     if (tokenCookie.value) {
+      const headers = new Headers(options.headers);
       headers.set("Authorization", `Bearer ${tokenCookie.value}`);
+      options.headers = headers;
     }
 
-    options.headers = headers;
-    // Debug: Cek apakah token terkirim
-    console.log("Request headers:", headers);
+    if (import.meta.dev) {
+      console.log(`[API] ${options.method || 'GET'} ${request}`);
+    }
   },
   
   onResponseError({ response }) {

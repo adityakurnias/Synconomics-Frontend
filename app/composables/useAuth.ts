@@ -60,11 +60,8 @@ export const useAuth = () => {
 
   const Login = async (payload: any) => {
     try {
-      const url = `${config.public.apiBase}/api/auth/login`
-      const raw: any = await $fetch(url, {
-        method: 'POST',
-        body: payload
-      })
+      const response = await authService.login(payload)
+      const raw = response as any
 
       console.log('[useAuth] Login full raw response:', JSON.stringify(raw))
 
@@ -73,7 +70,8 @@ export const useAuth = () => {
 
       if (token) {
         tokenCookie.value = token
-        
+        // Wait for cookie to be available
+        await nextTick()
         // Always fetch the latest complete profile to avoid missing fields like 'name'
         await FetchProfile()
       } else {

@@ -53,6 +53,7 @@
               :trend="totalCostTrend"
               icon="heroicons:arrow-trending-down"
               iconColor="danger"
+              :invertTrend="true"
             />
             <DashboardStatCard
               title="Net Profit"
@@ -220,8 +221,9 @@ const previousMonthNetProfit = computed(() => {
 // Helper to calculate trend percentage
 const calculateTrend = (currentValue: number, previousValue: number): number => {
   if (previousValue === 0) {
-    if (currentValue > 0) return 100; // Grew from zero
-    return 0; // No change from zero
+    if (currentValue > 0) return 100;
+    if (currentValue < 0) return -100;
+    return 0;
   }
   return ((currentValue - previousValue) / previousValue) * 100;
 };

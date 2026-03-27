@@ -7,37 +7,38 @@
     </div>
 
     <!-- Stats Grid -->
-    <div v-if="isLoadingMetrics" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <DashboardStatCard title="Loading..." value="-" :trend="0" icon="heroicons:arrow-trending-up" iconColor="success" />
       <DashboardStatCard title="Loading..." value="-" :trend="0" icon="heroicons:banknotes" iconColor="danger" />
-      <DashboardStatCard title="Loading..." value="-" :trend="0" icon="heroicons:cog" iconColor="warning" />
+      <!-- <DashboardStatCard title="Loading..." value="-" :trend="0" icon="heroicons:cog" iconColor="warning" /> -->
       <DashboardStatCard title="Loading..." value="-" :trend="0" icon="heroicons:building-library" iconColor="accent" />
     </div>
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <DashboardStatCard 
         title="Total Revenue" 
-        :value="formatCurrency(totalRevenue)" 
+        :value="formatCurrency(currentMonthRevenue)" 
         :trend="totalRevenueTrend" 
         icon="heroicons:arrow-trending-up"
         iconColor="success"
       />
       <DashboardStatCard 
         title="Total Cost" 
-        :value="formatCurrency(totalCost)" 
+        :value="formatCurrency(currentMonthCost)" 
         :trend="totalCostTrend" 
         icon="heroicons:banknotes"
         iconColor="danger"
+        :invertTrend="true"
       />
-      <DashboardStatCard 
+      <!-- <DashboardStatCard 
         title="Operational Cost" 
         :value="formatCurrency(operationalCost)" 
         :trend="operationalCostTrend" 
         icon="heroicons:cog"
         iconColor="warning"
-      />
+      /> -->
       <DashboardStatCard 
         title="Net Profit" 
-        :value="formatCurrency(netProfit)" 
+        :value="formatCurrency(currentMonthNetProfit)" 
         :trend="netProfitTrend" 
         icon="heroicons:building-library"
         iconColor="accent"
@@ -62,13 +63,16 @@
 
 <script setup lang="ts">
 import { useBusiness } from '~/composables/useBusiness';
-import type { BusinessMetric, Business } from '~/types/business.types';
+import { useExpense } from '~/composables/useExpense';
+import { useTransaction } from '~/composables/useTransaction';
 
 definePageMeta({
   layout: 'dashboard'
 });
 
-const { metrics, isLoading: isLoadingMetrics, fetchMetrics, businesses, fetchBusinesses } = useBusiness();
+const { businesses, fetchBusinesses } = useBusiness();
+const { expenses, fetchExpenses } = useExpense();
+const { transactions, isLoading, fetchTransactions } = useTransaction();
 
 const currentBusinessId = ref<number | null>(null);
 
@@ -77,63 +81,83 @@ onMounted(async () => {
   const firstBusiness = businesses.value?.[0];
   if (firstBusiness) {
     currentBusinessId.value = firstBusiness.id;
+    await Promise.all([
+      fetchExpenses(firstBusiness.id),
+      fetchTransactions(firstBusiness.id)
+    ]);
   }
-  await fetchMetrics();
 });
 
-const latestMetric = computed<BusinessMetric | null>(() => {
-  if (metrics.value && metrics.value.length > 0) {
-    return metrics.value[0] ?? null; 
-  }
-  return null;
-});
+// Helper to check if a date is in the current month
+const isCurrentMonth = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+};
 
-const previousMetric = computed<BusinessMetric | null>(() => {
-  if (metrics.value && metrics.value.length > 1) {
-    // Assuming the second latest metric is the second one in the array
-    return metrics.value[1] ?? null;
-  }
-  return null;
-});
+// Helper to check if a date is in the previous month
+const isPreviousMonth = (dateString: string) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  return date.getMonth() === prevMonth.getMonth() && date.getFullYear() === prevMonth.getFullYear();
+};
 
+// Filter transactions and expenses for current and previous month
+const currentMonthTransactions = computed(() =>
+  transactions.value.filter(t => isCurrentMonth(t.transaction_date || t.created_at || ''))
+);
+const previousMonthTransactions = computed(() =>
+  transactions.value.filter(t => isPreviousMonth(t.transaction_date || t.created_at || ''))
+);
+const currentMonthExpenses = computed(() =>
+  expenses.value.filter(e => isCurrentMonth(e.created_at || ''))
+);
+const previousMonthExpenses = computed(() =>
+  expenses.value.filter(e => isPreviousMonth(e.created_at || ''))
+);
+
+// Current month metrics
+const currentMonthRevenue = computed(() =>
+  currentMonthTransactions.value.reduce((sum, t) => sum + Number(t.total_amount), 0)
+);
+const currentMonthCost = computed(() =>
+  currentMonthExpenses.value.reduce((sum, e) => sum + Number(e.amount), 0)
+);
+const currentMonthNetProfit = computed(() =>
+  currentMonthRevenue.value - currentMonthCost.value
+);
+
+// Previous month metrics
+const previousMonthRevenue = computed(() =>
+  previousMonthTransactions.value.reduce((sum, t) => sum + Number(t.total_amount), 0)
+);
+const previousMonthCost = computed(() =>
+  previousMonthExpenses.value.reduce((sum, e) => sum + Number(e.amount), 0)
+);
+const previousMonthNetProfit = computed(() =>
+  previousMonthRevenue.value - previousMonthCost.value
+);
+
+// Trend calculation
 const calculateTrend = (currentValue: number, previousValue: number): number => {
-  if (previousValue === 0) return 0; // Avoid division by zero
+  if (previousValue === 0) {
+    if (currentValue > 0) return 100;
+    if (currentValue < 0) return -100;
+    return 0;
+  }
   return ((currentValue - previousValue) / previousValue) * 100;
 };
 
-const totalRevenue = computed(() => latestMetric.value?.revenue || 0);
-const totalRevenueTrend = computed(() => {
-  if (latestMetric.value && previousMetric.value) {
-    return calculateTrend(latestMetric.value.revenue, previousMetric.value.revenue);
-  }
-  return 0;
-});
-
-const totalCost = computed(() => (latestMetric.value?.operational_cost || 0) + (latestMetric.value?.cogs || 0));
-const totalCostTrend = computed(() => {
-  if (latestMetric.value && previousMetric.value) {
-    const currentTotalCost = (latestMetric.value.operational_cost || 0) + (latestMetric.value.cogs || 0);
-    const previousTotalCost = (previousMetric.value.operational_cost || 0) + (previousMetric.value.cogs || 0);
-    return calculateTrend(currentTotalCost, previousTotalCost);
-  }
-  return 0;
-});
-
-const operationalCost = computed(() => latestMetric.value?.operational_cost || 0);
-const operationalCostTrend = computed(() => {
-  if (latestMetric.value && previousMetric.value) {
-    return calculateTrend(latestMetric.value.operational_cost, previousMetric.value.operational_cost);
-  }
-  return 0;
-});
-
-const netProfit = computed(() => latestMetric.value?.net_profit || 0);
-const netProfitTrend = computed(() => {
-  if (latestMetric.value && previousMetric.value) {
-    return calculateTrend(latestMetric.value.net_profit, previousMetric.value.net_profit);
-  }
-  return 0;
-});
+const totalRevenueTrend = computed(() =>
+  calculateTrend(currentMonthRevenue.value, previousMonthRevenue.value)
+);
+const totalCostTrend = computed(() =>
+  calculateTrend(currentMonthCost.value, previousMonthCost.value)
+);
+const netProfitTrend = computed(() =>
+  calculateTrend(currentMonthNetProfit.value, previousMonthNetProfit.value)
+);
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('id-ID', {

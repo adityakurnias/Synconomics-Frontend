@@ -10,7 +10,7 @@
     <!-- Active Content -->
     <div class="flex-1 flex flex-col min-h-0">
       <!-- Network Map -->
-      <div class="glass-card rounded-3xl border border-white/5 overflow-hidden flex-1 relative min-h-[500px]">
+      <div class="glass-card rounded-3xl border border-white/5 overflow-hidden flex-1 relative min-h-125">
         <div v-if="isLoadingNetwork" class="absolute inset-0 bg-syn-darker/80 backdrop-blur-sm z-20 flex items-center justify-center">
           <div class="w-10 h-10 border-4 border-syn-accent border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -20,7 +20,7 @@
         </div>
 
         <!-- Legend -->
-        <div class="absolute top-4 right-4 z-[11] flex flex-col gap-2 scale-90 origin-top-right">
+        <div class="absolute top-4 right-4 z-11 flex flex-col gap-2 scale-90 origin-top-right">
           <div class="px-3 py-2 bg-syn-darker/90 backdrop-blur-md rounded-xl border border-white/10 flex items-center gap-3">
             <div class="flex items-center gap-2">
               <div class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></div>
@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useSupplyNetwork } from '~/composables/useSupplyNetwork';
-import { useAuth } from '~/composables/useAuth';
+import { useBusiness } from '~/composables/useBusiness';
 import { useHead } from '#imports';
 
 useHead({
@@ -60,7 +60,10 @@ definePageMeta({
 });
 
 const { businesses: networkBusinesses, isLoading: isLoadingNetwork, error: networkError, fetchPublicBusinesses } = useSupplyNetwork();
-const { user } = useAuth();
+const { businesses: myBusinesses, fetchBusinesses } = useBusiness();
+
+// Set of business IDs owned by the logged-in user
+const myBusinessIds = computed(() => new Set(myBusinesses.value.map(b => b.id)));
 
 let map: any = null;
 let markers: any[] = [];
@@ -77,7 +80,7 @@ const checkLeafletLoaded = (retries = 30) => {
 
 onMounted(async () => {
   checkLeafletLoaded();
-  await fetchPublicBusinesses();
+  await Promise.all([fetchPublicBusinesses(), fetchBusinesses()]);
 });
 
 onBeforeUnmount(() => {
@@ -124,7 +127,7 @@ const plotMarkers = () => {
       const lng = parseFloat(business.longitude as unknown as string);
       
       if (!isNaN(lat) && !isNaN(lng)) {
-        const isOwner = user.value && business.user_id === user.value.id;
+        const isOwner = myBusinessIds.value.has(business.id);
         const markerColor = isOwner ? '#34d399' : '#3b82f6';
         
         const customIcon = L.divIcon({
